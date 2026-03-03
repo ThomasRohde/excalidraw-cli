@@ -1,0 +1,28 @@
+[
+  {
+    "id": "el1",
+    "type": "rectangle",
+    "x": 0,
+    "y": 0,
+    "width": 100,
+    "height": 100,
+    "isDeleted": false,
+    "opacity": 100,
+    "groupIds": [],
+    "frameId": null,
+    "boundElements": null
+  },
+  {
+    "id": "el2",
+    "type": "ellipse",
+    "x": 200,
+    "y": 0,
+    "width": 80,
+    "height": 80,
+    "isDeleted": false,
+    "opacity": 100,
+    "groupIds": [],
+    "frameId": null,
+    "boundElements": null
+  }
+]

@@ -1,0 +1,63 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {
+      "id": "frame1",
+      "type": "frame",
+      "x": 0,
+      "y": 0,
+      "width": 400,
+      "height": 300,
+      "isDeleted": false,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "boundElements": null,
+      "name": "Login Flow"
+    },
+    {
+      "id": "rect-in-frame1",
+      "type": "rectangle",
+      "x": 50,
+      "y": 50,
+      "width": 150,
+      "height": 80,
+      "isDeleted": false,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": "frame1",
+      "boundElements": null
+    },
+    {
+      "id": "frame2",
+      "type": "frame",
+      "x": 500,
+      "y": 0,
+      "width": 400,
+      "height": 300,
+      "isDeleted": false,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "boundElements": null,
+      "name": "Dashboard"
+    },
+    {
+      "id": "rect-in-frame2",
+      "type": "rectangle",
+      "x": 550,
+      "y": 50,
+      "width": 200,
+      "height": 100,
+      "isDeleted": false,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": "frame2",
+      "boundElements": null
+    }
+  ],
+  "appState": {},
+  "files": {}
+}

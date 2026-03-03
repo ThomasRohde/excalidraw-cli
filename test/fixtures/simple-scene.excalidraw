@@ -1,0 +1,78 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {
+      "id": "rect1",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 200,
+      "height": 100,
+      "isDeleted": false,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "boundElements": [{ "id": "text1", "type": "text" }],
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roughness": 1,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "text1",
+      "type": "text",
+      "x": 150,
+      "y": 130,
+      "width": 100,
+      "height": 40,
+      "isDeleted": false,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "boundElements": null,
+      "text": "Hello",
+      "fontSize": 20,
+      "fontFamily": 1,
+      "containerId": "rect1"
+    },
+    {
+      "id": "ellipse1",
+      "type": "ellipse",
+      "x": 400,
+      "y": 100,
+      "width": 150,
+      "height": 150,
+      "isDeleted": false,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "boundElements": null,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid"
+    },
+    {
+      "id": "arrow1",
+      "type": "arrow",
+      "x": 300,
+      "y": 150,
+      "width": 100,
+      "height": 25,
+      "isDeleted": false,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "boundElements": null,
+      "startBinding": { "elementId": "rect1", "focus": 0, "gap": 1 },
+      "endBinding": { "elementId": "ellipse1", "focus": 0, "gap": 1 }
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff"
+  },
+  "files": {}
+}

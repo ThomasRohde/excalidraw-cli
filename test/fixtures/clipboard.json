@@ -1,0 +1,36 @@
+{
+  "type": "excalidraw/clipboard",
+  "elements": [
+    {
+      "id": "clip-rect",
+      "type": "rectangle",
+      "x": 10,
+      "y": 10,
+      "width": 100,
+      "height": 50,
+      "isDeleted": false,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "boundElements": null
+    },
+    {
+      "id": "clip-text",
+      "type": "text",
+      "x": 30,
+      "y": 20,
+      "width": 60,
+      "height": 30,
+      "isDeleted": false,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "boundElements": null,
+      "text": "Pasted",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "containerId": null
+    }
+  ],
+  "files": {}
+}
