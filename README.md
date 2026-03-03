@@ -1,6 +1,6 @@
 # excal
 
-![version](https://img.shields.io/badge/version-1.0.0-blue)
+![version](https://img.shields.io/badge/version-1.0.1-blue)
 [![npm](https://img.shields.io/npm/v/@trohde/excal-cli)](https://www.npmjs.com/package/@trohde/excal-cli)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -188,6 +188,15 @@ npm run build       # Build CLI + bridge bundles
 npm test            # Run all tests
 npm run dev         # Watch mode build
 npm run typecheck   # TypeScript type checking
+```
+
+## Releasing
+
+```bash
+pnpm run bump:patch                              # or bump:minor / bump:major
+git add -A && git commit -m "chore: release vX.Y.Z"
+git push
+npm publish --access=public --auth-type=web      # opens browser for npm auth
 ```
 
 ## License

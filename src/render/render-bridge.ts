@@ -28,34 +28,6 @@ export class RenderBridge {
     const context = await this.browser.newContext();
     this.page = await context.newPage();
 
-    // Route font requests to local @excalidraw/excalidraw dist if available
-    try {
-      await import("@excalidraw/excalidraw");
-      const { resolve, dirname } = await import("node:path");
-      const { readFile } = await import("node:fs/promises");
-      const { createRequire } = await import("node:module");
-      const require = createRequire(import.meta.url);
-      const excalidrawDir = dirname(require.resolve("@excalidraw/excalidraw/package.json"));
-
-      await this.page.route("**/*.woff2", async (route: any) => {
-        try {
-          const url = new URL(route.request().url());
-          const fontName = url.pathname.split("/").pop();
-          if (fontName) {
-            const fontPath = resolve(excalidrawDir, "dist", "excalidraw-assets", fontName);
-            const body = await readFile(fontPath);
-            await route.fulfill({ body, contentType: "font/woff2" });
-            return;
-          }
-        } catch {
-          // Fall through to abort
-        }
-        await route.abort();
-      });
-    } catch {
-      // @excalidraw/excalidraw not installed, fonts won't be routed
-    }
-
     this.bridgeHtml = await generateBridgeHtml();
     await this.page.setContent(this.bridgeHtml);
 
