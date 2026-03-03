@@ -46,11 +46,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run build && npm test",
+    "prepublishOnly": "pnpm build && pnpm test",
     "bump:badge": "node -e \"const fs=require('fs');const v=require('./package.json').version;const r=fs.readFileSync('README.md','utf8');fs.writeFileSync('README.md',r.replace(/version-[^-]+-blue/,'version-'+v+'-blue'));\"",
-    "bump:patch": "npm version patch --no-git-tag-version && npm run bump:badge && npm run build",
-    "bump:minor": "npm version minor --no-git-tag-version && npm run bump:badge && npm run build",
-    "bump:major": "npm version major --no-git-tag-version && npm run bump:badge && npm run build"
+    "bump:patch": "npm version patch --no-git-tag-version && pnpm run bump:badge && pnpm build",
+    "bump:minor": "npm version minor --no-git-tag-version && pnpm run bump:badge && pnpm build",
+    "bump:major": "npm version major --no-git-tag-version && pnpm run bump:badge && pnpm build"
   },
   "dependencies": {
     "commander": "^13.1.0",
