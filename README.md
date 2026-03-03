@@ -1,6 +1,6 @@
 # excal
 
-![version](https://img.shields.io/badge/version-1.0.1-blue)
+![version](https://img.shields.io/badge/version-1.0.2-blue)
 [![npm](https://img.shields.io/npm/v/@trohde/excal-cli)](https://www.npmjs.com/package/@trohde/excal-cli)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
