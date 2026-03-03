@@ -1,24 +1,17 @@
-import { renderError } from "../core/errors.js";
+import { renderError, errorMessage } from "../core/errors.js";
 import { generateBridgeHtml } from "./bridge-page.js";
 
 interface SceneData {
   elements: unknown[];
   appState?: Record<string, unknown>;
   files?: Record<string, unknown>;
+  exportPadding?: number;
 }
 
 export class RenderBridge {
   private browser: any = null;
   private page: any = null;
-
-  static async isAvailable(): Promise<boolean> {
-    try {
-      await import("playwright");
-      return true;
-    } catch {
-      return false;
-    }
-  }
+  private bridgeHtml: string | null = null;
 
   async initialize(): Promise<void> {
     let pw: any;
@@ -37,18 +30,18 @@ export class RenderBridge {
 
     // Route font requests to local @excalidraw/excalidraw dist if available
     try {
-      const excalidrawPkg = await import("@excalidraw/excalidraw");
-      // Try to serve fonts from the package
+      await import("@excalidraw/excalidraw");
+      const { resolve, dirname } = await import("node:path");
+      const { readFile } = await import("node:fs/promises");
+      const { createRequire } = await import("node:module");
+      const require = createRequire(import.meta.url);
+      const excalidrawDir = dirname(require.resolve("@excalidraw/excalidraw/package.json"));
+
       await this.page.route("**/*.woff2", async (route: any) => {
         try {
           const url = new URL(route.request().url());
           const fontName = url.pathname.split("/").pop();
           if (fontName) {
-            const { resolve, dirname } = await import("node:path");
-            const { readFile } = await import("node:fs/promises");
-            const { createRequire } = await import("node:module");
-            const require = createRequire(import.meta.url);
-            const excalidrawDir = dirname(require.resolve("@excalidraw/excalidraw/package.json"));
             const fontPath = resolve(excalidrawDir, "dist", "excalidraw-assets", fontName);
             const body = await readFile(fontPath);
             await route.fulfill({ body, contentType: "font/woff2" });
@@ -63,8 +56,8 @@ export class RenderBridge {
       // @excalidraw/excalidraw not installed, fonts won't be routed
     }
 
-    const html = await generateBridgeHtml();
-    await this.page.setContent(html);
+    this.bridgeHtml = await generateBridgeHtml();
+    await this.page.setContent(this.bridgeHtml);
 
     // Wait for bridge to be ready
     await this.page.waitForFunction("window.__bridgeReady === true", {
@@ -84,10 +77,7 @@ export class RenderBridge {
       );
       return svgString;
     } catch (err: unknown) {
-      throw renderError(
-        "EXPORT_FAILED",
-        `SVG export failed: ${err instanceof Error ? err.message : String(err)}`,
-      );
+      throw renderError("EXPORT_FAILED", `SVG export failed: ${errorMessage(err)}`);
     }
   }
 
@@ -107,10 +97,7 @@ export class RenderBridge {
       );
       return Buffer.from(base64, "base64");
     } catch (err: unknown) {
-      throw renderError(
-        "EXPORT_FAILED",
-        `PNG export failed: ${err instanceof Error ? err.message : String(err)}`,
-      );
+      throw renderError("EXPORT_FAILED", `PNG export failed: ${errorMessage(err)}`);
     }
   }
 
@@ -138,20 +125,18 @@ export class RenderBridge {
         printBackground: true,
       });
 
-      // Re-load bridge for subsequent calls
-      const html = await generateBridgeHtml();
-      await this.page.setContent(html);
-      await this.page.waitForFunction("window.__bridgeReady === true", {
-        timeout: 10_000,
-      });
+      // Re-load cached bridge HTML for subsequent calls
+      if (this.bridgeHtml) {
+        await this.page.setContent(this.bridgeHtml);
+        await this.page.waitForFunction("window.__bridgeReady === true", {
+          timeout: 10_000,
+        });
+      }
 
       return Buffer.from(pdf);
     } catch (err: unknown) {
       if (err instanceof Error && err.message.includes("ERR_RENDER")) throw err;
-      throw renderError(
-        "EXPORT_FAILED",
-        `PDF export failed: ${err instanceof Error ? err.message : String(err)}`,
-      );
+      throw renderError("EXPORT_FAILED", `PDF export failed: ${errorMessage(err)}`);
     }
   }
 
@@ -160,6 +145,7 @@ export class RenderBridge {
       await this.browser.close();
       this.browser = null;
       this.page = null;
+      this.bridgeHtml = null;
     }
   }
 }

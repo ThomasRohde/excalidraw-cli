@@ -1,33 +1,15 @@
-import type { RenderBridge } from "./render-bridge.js";
-import type { ExcalidrawScene } from "../scene/schema.js";
-import { writeOutput } from "../core/io.js";
-import { join } from "node:path";
+import type { ExportOptions, ExportResult } from "./export-common.js";
+import { exportFormat } from "./export-common.js";
 
-export interface PdfExportResult {
-  type: "pdf";
-  path: string;
-  bytes: number;
-}
+export type PdfExportResult = ExportResult & { type: "pdf" };
 
-export async function exportPdf(
-  bridge: RenderBridge,
-  scene: ExcalidrawScene,
-  outDir: string,
-  baseName: string,
-  dryRun: boolean,
-): Promise<PdfExportResult> {
-  const sceneData = {
-    elements: scene.elements,
-    appState: scene.appState,
-    files: scene.files,
-  };
-
-  const buf = await bridge.exportPdf(sceneData);
-  const path = join(outDir, `${baseName}.pdf`);
-
-  if (!dryRun) {
-    await writeOutput(path, buf);
-  }
-
-  return { type: "pdf", path, bytes: buf.length };
+export async function exportPdf(opts: ExportOptions): Promise<PdfExportResult> {
+  return exportFormat({
+    ...opts,
+    ext: "pdf",
+    render: async (bridge, sceneData) => {
+      const buf = await bridge.exportPdf(sceneData);
+      return { data: buf, bytes: buf.length };
+    },
+  }) as Promise<PdfExportResult>;
 }

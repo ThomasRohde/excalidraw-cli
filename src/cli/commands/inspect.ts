@@ -17,10 +17,11 @@ export function registerInspect(program: Command): void {
 
         const loaded = await loadScene(fileStr);
 
-        const filtered = applyFilters(loaded.parsed, {
+        const { scene: filtered, warnings: filterWarnings } = applyFilters(loaded.parsed, {
           includeDeleted: options.includeDeleted,
           frameId: options.frame,
         });
+        for (const w of filterWarnings) ctx.warn(w);
 
         const inspection = inspectScene(filtered);
 

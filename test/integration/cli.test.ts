@@ -47,6 +47,30 @@ function parseEnvelope(stdout: string) {
   return JSON.parse(stdout);
 }
 
+describe("excal (bare command)", () => {
+  it("outputs JSON error envelope with no command", async () => {
+    const { stdout, exitCode } = await run([]);
+    const env = parseEnvelope(stdout);
+
+    expect(env.ok).toBe(false);
+    expect(env.errors).toHaveLength(1);
+    expect(env.errors[0].code).toBe("ERR_VALIDATION_NO_COMMAND");
+    expect(env.result).toBeNull();
+    expect(exitCode).toBe(10);
+  });
+
+  it("outputs JSON error envelope for missing arg", async () => {
+    const { stdout, exitCode } = await run(["inspect"]);
+    const env = parseEnvelope(stdout);
+
+    expect(env.ok).toBe(false);
+    expect(env.errors).toHaveLength(1);
+    expect(env.errors[0].code).toBe("ERR_VALIDATION_INVALID_ARGS");
+    expect(env.result).toBeNull();
+    expect(exitCode).toBe(10);
+  });
+});
+
 describe("excal guide", () => {
   it("returns markdown content in envelope", async () => {
     const { stdout } = await run(["guide"]);

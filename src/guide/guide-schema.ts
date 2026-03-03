@@ -44,7 +44,7 @@ Render scene to SVG, PNG, or PDF. PNG/PDF require Playwright.
 | \`--pdf\` | Export PDF (requires Playwright) |
 | \`--dark-mode\` | Use dark theme |
 | \`--no-background\` | Transparent background |
-| \`--scale <n>\` | Scale factor for PNG (default: 2) |
+| \`--scale <n>\` | Scale factor for PNG output only (default: 2) |
 | \`--padding <n>\` | Padding in pixels (default: 20) |
 | \`--frame <id\\|name>\` | Export specific frame only |
 | \`--element <id>\` | Export specific element only |
@@ -98,6 +98,7 @@ Every command returns a JSON envelope on stdout:
 - \`errors\` and \`warnings\` are always arrays (possibly empty), never omitted.
 - \`result\` is always present; on failure it is \`null\`.
 - Each error carries \`code\`, \`message\`, \`retryable\`, and \`suggested_action\`.
+- **Note on \`validate\`**: \`ok: true\` means the command executed successfully, not that the scene is valid. Check \`result.valid\` (boolean) for scene validity, and \`result.issues\` / \`warnings\` for details.
 
 ## Concurrency
 

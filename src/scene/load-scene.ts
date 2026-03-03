@@ -4,7 +4,6 @@ import { sha256 } from "../core/fingerprint.js";
 import { validationError } from "../core/errors.js";
 
 export interface LoadedScene {
-  raw: string;
   parsed: ExcalidrawScene;
   source: string;
   fingerprint: string;
@@ -24,7 +23,7 @@ export async function loadScene(fileOrDash: string): Promise<LoadedScene> {
   // Auto-detect format
   const parsed = detectAndParse(json, source);
 
-  return { raw: content, parsed, source, fingerprint };
+  return { parsed, source, fingerprint };
 }
 
 function detectAndParse(json: unknown, source: string): ExcalidrawScene {

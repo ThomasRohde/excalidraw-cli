@@ -1,5 +1,5 @@
 import { buildEnvelope, type Envelope } from "./envelope.js";
-import { CliError, internalError, type StructuredError } from "./errors.js";
+import { CliError, internalError, errorMessage, type StructuredError } from "./errors.js";
 import { exitCodeForError } from "./exit-codes.js";
 import { generateRequestId } from "./request-id.js";
 import { Timer } from "./timer.js";
@@ -49,9 +49,7 @@ export function wrapCommand<T>(
       const structured =
         err instanceof CliError
           ? err.structured
-          : internalError(
-              err instanceof Error ? err.message : String(err),
-            ).structured;
+          : internalError(errorMessage(err)).structured;
 
       envelope = buildEnvelope<T>({
         request_id: requestId,
@@ -65,6 +63,9 @@ export function wrapCommand<T>(
       process.exitCode = exitCodeForError(structured.code);
     }
 
-    process.stdout.write(JSON.stringify(envelope, null, 2) + "\n");
+    const json = JSON.stringify(envelope, null, 2) + "\n";
+    await new Promise<void>((resolve) => {
+      process.stdout.write(json, () => resolve());
+    });
   };
 }

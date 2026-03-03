@@ -7,6 +7,7 @@ interface SceneData {
   elements: unknown[];
   appState?: Record<string, unknown>;
   files?: Record<string, unknown>;
+  exportPadding?: number;
 }
 
 async function bridgeExportToSvg(sceneData: SceneData): Promise<string> {
@@ -14,7 +15,8 @@ async function bridgeExportToSvg(sceneData: SceneData): Promise<string> {
     elements: sceneData.elements as any,
     appState: sceneData.appState as any,
     files: (sceneData.files as any) ?? {},
-  });
+    exportPadding: sceneData.exportPadding,
+  } as any);
   return svg.outerHTML;
 }
 

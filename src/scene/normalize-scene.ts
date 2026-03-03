@@ -57,5 +57,16 @@ function normalizeElement(el: ExcalidrawElement): ExcalidrawElement {
     result.points = [[0, 0], [el.width, el.height]];
   }
 
+  // Text elements require font/layout properties for rendering
+  if (el.type === "text") {
+    result.fontSize = (raw.fontSize as number) ?? 20;
+    result.fontFamily = (raw.fontFamily as number) ?? 1;
+    result.textAlign = (raw.textAlign as string) ?? "left";
+    result.verticalAlign = (raw.verticalAlign as string) ?? "top";
+    result.lineHeight = (raw.lineHeight as number) ?? 1.25;
+    result.originalText = (raw.originalText as string) ?? (raw.text as string) ?? "";
+    result.baseline = (raw.baseline as number) ?? 0;
+  }
+
   return result as ExcalidrawElement;
 }

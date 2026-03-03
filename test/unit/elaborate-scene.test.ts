@@ -278,7 +278,7 @@ describe("elaborate scene: validation", () => {
 describe("elaborate scene: filtering", () => {
   it("excludes deleted elements by default", async () => {
     const { parsed } = await loadScene(FIXTURE);
-    const filtered = applyFilters(parsed, {});
+    const { scene: filtered } = applyFilters(parsed, {});
 
     expect(filtered.elements.every((e) => !e.isDeleted)).toBe(true);
     expect(filtered.elements).toHaveLength(26);
@@ -286,7 +286,7 @@ describe("elaborate scene: filtering", () => {
 
   it("includes deleted elements when requested", async () => {
     const { parsed } = await loadScene(FIXTURE);
-    const filtered = applyFilters(parsed, { includeDeleted: true });
+    const { scene: filtered } = applyFilters(parsed, { includeDeleted: true });
 
     expect(filtered.elements).toHaveLength(29);
     expect(filtered.elements.filter((e) => e.isDeleted)).toHaveLength(3);
@@ -294,7 +294,7 @@ describe("elaborate scene: filtering", () => {
 
   it("filters Architecture frame by ID", async () => {
     const { parsed } = await loadScene(FIXTURE);
-    const filtered = applyFilters(parsed, { frameId: "frame-arch" });
+    const { scene: filtered } = applyFilters(parsed, { frameId: "frame-arch" });
 
     // frame itself (1) + 16 children
     expect(filtered.elements).toHaveLength(17);
@@ -305,7 +305,7 @@ describe("elaborate scene: filtering", () => {
 
   it("filters Architecture frame by name", async () => {
     const { parsed } = await loadScene(FIXTURE);
-    const filtered = applyFilters(parsed, { frameId: "Architecture" });
+    const { scene: filtered } = applyFilters(parsed, { frameId: "Architecture" });
 
     expect(filtered.elements).toHaveLength(17);
     expect(filtered.elements[0].id).toBe("frame-arch");
@@ -313,7 +313,7 @@ describe("elaborate scene: filtering", () => {
 
   it("filters Notes frame by name", async () => {
     const { parsed } = await loadScene(FIXTURE);
-    const filtered = applyFilters(parsed, { frameId: "Notes" });
+    const { scene: filtered } = applyFilters(parsed, { frameId: "Notes" });
 
     // frame + 5 children
     expect(filtered.elements).toHaveLength(6);
@@ -323,7 +323,7 @@ describe("elaborate scene: filtering", () => {
 
   it("filters by specific element IDs", async () => {
     const { parsed } = await loadScene(FIXTURE);
-    const filtered = applyFilters(parsed, {
+    const { scene: filtered } = applyFilters(parsed, {
       elementIds: ["rect-client", "diamond-api", "ellipse-db"],
     });
 
@@ -338,19 +338,20 @@ describe("elaborate scene: filtering", () => {
   it("combines frame filter + excludes deleted", async () => {
     const { parsed } = await loadScene(FIXTURE);
     // Notes frame has no deleted elements, so all pass
-    const filtered = applyFilters(parsed, { frameId: "frame-notes" });
+    const { scene: filtered } = applyFilters(parsed, { frameId: "frame-notes" });
 
     expect(filtered.elements.every((e) => !e.isDeleted)).toBe(true);
     expect(filtered.elements).toHaveLength(6);
   });
 
-  it("returns empty when filtering by non-existent frame name", async () => {
+  it("returns warning when filtering by non-existent frame name", async () => {
     const { parsed } = await loadScene(FIXTURE);
-    const filtered = applyFilters(parsed, { frameId: "NoSuchFrame" });
+    const { scene: filtered, warnings } = applyFilters(parsed, { frameId: "NoSuchFrame" });
 
     // No frame matched, so frameId filter is a no-op — returns all non-deleted
-    // (The frame filter only activates if a match is found)
     expect(filtered.elements).toHaveLength(26);
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0].code).toBe("ERR_VALIDATION_FRAME_NOT_FOUND");
   });
 });
 
@@ -457,7 +458,7 @@ describe("elaborate scene: normalization", () => {
 describe("elaborate scene: inspect + filter combos", () => {
   it("Architecture frame inspection has correct counts", async () => {
     const { parsed } = await loadScene(FIXTURE);
-    const filtered = applyFilters(parsed, { frameId: "frame-arch" });
+    const { scene: filtered } = applyFilters(parsed, { frameId: "frame-arch" });
     const info = inspectScene(filtered);
 
     expect(info.element_count).toBe(17);
@@ -473,7 +474,7 @@ describe("elaborate scene: inspect + filter combos", () => {
 
   it("Notes frame inspection has images and freedraw", async () => {
     const { parsed } = await loadScene(FIXTURE);
-    const filtered = applyFilters(parsed, { frameId: "frame-notes" });
+    const { scene: filtered } = applyFilters(parsed, { frameId: "frame-notes" });
     const info = inspectScene(filtered);
 
     expect(info.element_count).toBe(6);
@@ -484,7 +485,7 @@ describe("elaborate scene: inspect + filter combos", () => {
 
   it("inspecting with --include-deleted shows deleted count", async () => {
     const { parsed } = await loadScene(FIXTURE);
-    const filtered = applyFilters(parsed, { includeDeleted: true });
+    const { scene: filtered } = applyFilters(parsed, { includeDeleted: true });
     const info = inspectScene(filtered);
 
     expect(info.element_count).toBe(26);
@@ -493,7 +494,7 @@ describe("elaborate scene: inspect + filter combos", () => {
 
   it("single-element filter returns only that element", async () => {
     const { parsed } = await loadScene(FIXTURE);
-    const filtered = applyFilters(parsed, { elementIds: ["diamond-api"] });
+    const { scene: filtered } = applyFilters(parsed, { elementIds: ["diamond-api"] });
     const info = inspectScene(filtered);
 
     expect(info.element_count).toBe(1);
@@ -502,7 +503,7 @@ describe("elaborate scene: inspect + filter combos", () => {
 
   it("validation of Architecture frame alone passes all checks", async () => {
     const { parsed } = await loadScene(FIXTURE);
-    const filtered = applyFilters(parsed, { frameId: "frame-arch" });
+    const { scene: filtered } = applyFilters(parsed, { frameId: "frame-arch" });
     const { result } = validateScene(filtered);
 
     expect(result.valid).toBe(true);
@@ -511,7 +512,7 @@ describe("elaborate scene: inspect + filter combos", () => {
 
   it("validation of Notes frame with --check-assets detects missing file", async () => {
     const { parsed } = await loadScene(FIXTURE);
-    const filtered = applyFilters(parsed, { frameId: "frame-notes" });
+    const { scene: filtered } = applyFilters(parsed, { frameId: "frame-notes" });
     const { result, warnings } = validateScene(filtered, { checkAssets: true });
 
     const assetCheck = result.checks.find((c) => c.name === "image_assets");

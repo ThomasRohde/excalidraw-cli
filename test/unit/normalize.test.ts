@@ -20,4 +20,23 @@ describe("normalizeScene", () => {
     const n2 = normalizeScene(loaded.parsed);
     expect(n1.elements.map((e) => e.id)).toEqual(n2.elements.map((e) => e.id));
   });
+
+  it("fills text-specific defaults", async () => {
+    const loaded = await loadScene("test/fixtures/bound-text.excalidraw");
+    const normalized = normalizeScene(loaded.parsed);
+
+    const textEls = normalized.elements.filter((e) => e.type === "text");
+    expect(textEls.length).toBeGreaterThan(0);
+
+    for (const el of textEls) {
+      const raw = el as Record<string, unknown>;
+      expect(typeof raw.fontSize).toBe("number");
+      expect(typeof raw.fontFamily).toBe("number");
+      expect(typeof raw.textAlign).toBe("string");
+      expect(typeof raw.verticalAlign).toBe("string");
+      expect(typeof raw.lineHeight).toBe("number");
+      expect(typeof raw.originalText).toBe("string");
+      expect(typeof raw.baseline).toBe("number");
+    }
+  });
 });

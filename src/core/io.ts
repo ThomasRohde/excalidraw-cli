@@ -1,7 +1,7 @@
 import { readFile, writeFile, rename, mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { randomBytes } from "node:crypto";
-import { ioError } from "./errors.js";
+import { ioError, errorMessage } from "./errors.js";
 
 export interface ReadResult {
   content: string;
@@ -16,7 +16,7 @@ export async function readInput(fileOrDash: string): Promise<ReadResult> {
     const content = await readFile(fileOrDash, "utf-8");
     return { content, source: fileOrDash };
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
+    const msg = errorMessage(err);
     throw ioError("READ_FAILED", `Failed to read file: ${fileOrDash}: ${msg}`, {
       path: fileOrDash,
     });
@@ -39,7 +39,7 @@ async function readStdin(): Promise<ReadResult> {
   });
 }
 
-export async function ensureDir(dir: string): Promise<void> {
+async function ensureDir(dir: string): Promise<void> {
   await mkdir(dir, { recursive: true });
 }
 
@@ -50,7 +50,7 @@ export async function writeOutput(path: string, data: string | Buffer): Promise<
     await writeFile(tmpPath, data);
     await rename(tmpPath, path);
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
+    const msg = errorMessage(err);
     throw ioError("WRITE_FAILED", `Failed to write file: ${path}: ${msg}`, {
       path,
     });

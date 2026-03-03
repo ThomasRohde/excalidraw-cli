@@ -1,5 +1,9 @@
 # excal
 
+![version](https://img.shields.io/badge/version-1.0.0-blue)
+[![npm](https://img.shields.io/npm/v/@trohde/excal-cli)](https://www.npmjs.com/package/@trohde/excal-cli)
+![license](https://img.shields.io/badge/license-MIT-green)
+
 Agent-first CLI for [Excalidraw](https://excalidraw.com) scene inspection, validation, and rendering.
 
 Built for AI agents, CI pipelines, and developers who need deterministic, non-interactive workflows around `.excalidraw` files. Every command returns a structured JSON envelope on stdout with stable error codes and exit semantics.
@@ -7,14 +11,28 @@ Built for AI agents, CI pipelines, and developers who need deterministic, non-in
 ## Install
 
 ```bash
-npm install
-npm run build
+npm install -g @trohde/excal-cli
+```
+
+Or run directly with npx:
+
+```bash
+npx @trohde/excal-cli inspect diagram.excalidraw
 ```
 
 PNG and PDF export require Playwright (optional):
 
 ```bash
 npx playwright install chromium
+```
+
+### From source
+
+```bash
+git clone https://github.com/ThomasRohde/excalidraw-cli.git
+cd excalidraw-cli
+npm install
+npm run build
 ```
 
 ## Quick Start

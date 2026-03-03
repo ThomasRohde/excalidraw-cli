@@ -1,17 +1,56 @@
 {
-  "name": "excalidraw-cli",
+  "name": "@trohde/excal-cli",
   "version": "1.0.0",
   "description": "Agent-first CLI for Excalidraw scene inspection, validation, and rendering",
   "type": "module",
+  "main": "./dist/cli/index.js",
+  "types": "./dist/cli/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/cli/index.js",
+      "types": "./dist/cli/index.d.ts"
+    }
+  },
+  "license": "MIT",
   "bin": {
     "excal": "./dist/cli/index.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "excalidraw",
+    "cli",
+    "svg",
+    "png",
+    "pdf",
+    "render",
+    "diagram",
+    "agent",
+    "automation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThomasRohde/excalidraw-cli.git"
+  },
+  "homepage": "https://github.com/ThomasRohde/excalidraw-cli#readme",
+  "bugs": {
+    "url": "https://github.com/ThomasRohde/excalidraw-cli/issues"
+  },
+  "author": "Thomas Klok Rohde",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm test",
+    "bump:badge": "node -e \"const fs=require('fs');const v=require('./package.json').version;const r=fs.readFileSync('README.md','utf8');fs.writeFileSync('README.md',r.replace(/version-[^-]+-blue/,'version-'+v+'-blue'));\"",
+    "bump:patch": "npm version patch --no-git-tag-version && npm run bump:badge && npm run build",
+    "bump:minor": "npm version minor --no-git-tag-version && npm run bump:badge && npm run build",
+    "bump:major": "npm version major --no-git-tag-version && npm run bump:badge && npm run build"
   },
   "dependencies": {
     "commander": "^13.1.0",

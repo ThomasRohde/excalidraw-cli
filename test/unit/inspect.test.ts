@@ -20,6 +20,8 @@ describe("inspectScene", () => {
 
     expect(info.element_count).toBe(1);
     expect(info.deleted_count).toBe(2);
+    expect(info.deleted_counts_by_type.rectangle).toBe(1);
+    expect(info.deleted_counts_by_type.ellipse).toBe(1);
   });
 
   it("detects frames and children", async () => {

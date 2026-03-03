@@ -1,34 +1,17 @@
-import type { RenderBridge } from "./render-bridge.js";
-import type { ExcalidrawScene } from "../scene/schema.js";
-import { writeOutput } from "../core/io.js";
-import { join } from "node:path";
+import type { ExportOptions, ExportResult } from "./export-common.js";
+import { exportFormat } from "./export-common.js";
 
-export interface PngExportResult {
-  type: "png";
-  path: string;
-  bytes: number;
-}
+export type PngExportResult = ExportResult & { type: "png" };
 
 export async function exportPng(
-  bridge: RenderBridge,
-  scene: ExcalidrawScene,
-  outDir: string,
-  baseName: string,
-  scale: number,
-  dryRun: boolean,
+  opts: ExportOptions & { scale: number },
 ): Promise<PngExportResult> {
-  const sceneData = {
-    elements: scene.elements,
-    appState: scene.appState,
-    files: scene.files,
-  };
-
-  const buf = await bridge.exportPng(sceneData, scale);
-  const path = join(outDir, `${baseName}.png`);
-
-  if (!dryRun) {
-    await writeOutput(path, buf);
-  }
-
-  return { type: "png", path, bytes: buf.length };
+  return exportFormat({
+    ...opts,
+    ext: "png",
+    render: async (bridge, sceneData) => {
+      const buf = await bridge.exportPng(sceneData, opts.scale);
+      return { data: buf, bytes: buf.length };
+    },
+  }) as Promise<PngExportResult>;
 }
